@@ -1,6 +1,6 @@
 # Spike Triggered Moments
 
-A MATLAB toolkit for decomposing neural responses into contributions from different statistical moments of stimulus distributions using histogram-based analysis.
+A comprehensive toolkit for decomposing neural responses into contributions from different statistical moments of stimulus distributions using histogram-based analysis. Features both **MATLAB** and **Python** interfaces with a **universal natural image processing function**.
 
 ## Overview
 
@@ -17,31 +17,54 @@ The toolkit analyzes data from the **FlashedGratePlusNoise protocol** and uses *
 
 ## Key Features
 
-- **Neural data integration**: Compatible with Rieke Lab data analysis framework
-- **Histogram-based analysis**: Convert stimuli to probability distributions for moment decomposition
+### 🧠 **Neural Data Analysis**
+- **Spike-triggered moment decomposition**: Beyond traditional STA analysis
+- **Histogram-based stimulus representations**: Convert stimuli to probability distributions
 - **Receptive field extraction**: Automatic RF mask generation from spike-triggered averages
-- **Moment decomposition**: Decompose responses into 0th-3rd order moment contributions
-- **Cross-validation**: Robust train/test splits with hold-out validation
-- **Synthetic testing**: 2D pink noise stimulus generation for method validation
+- **Cross-validation framework**: Robust train/test splits with hold-out validation
+
+### 🔬 **Stimulus Processing**
+- **Universal natural image patch extraction**: Single function callable from both MATLAB and Python
+- **Cross-platform compatibility**: Works on Windows, macOS, and Linux
+- **Automatic directory detection**: Finds natural image files across different systems
+- **Robust error handling**: Comprehensive validation and informative error messages
+
+### 🐍 **Python Integration**
+- **MATLAB Engine API integration**: Seamless MATLAB function calls from Python
+- **Multiple Python interfaces**: Simple functional and class-based approaches
+- **NumPy compatibility**: Native numpy array support
+- **Same results**: Identical output from MATLAB and Python environments
+
+### 🔧 **Development Tools**
+- **Synthetic data testing**: 2D pink noise stimulus generation for method validation
 - **Ridge regression**: Regularized fitting with custom regression functions
-- **Natural image processing**: Analysis of responses to natural image patches
+- **Comprehensive documentation**: Examples and guides for both environments
 
 ## Requirements
 
+### MATLAB Environment
 - MATLAB R2018b or later
 - Image Processing Toolbox
 - Statistics and Machine Learning Toolbox
 - Rieke Lab analysis framework (`edu.washington.rieke.Analysis`)
-- Custom functions:
-  - `manualRidgeRegressionCustom.m`
-  - `SpikeDetection.Detector`
-  - `getNaturalImagePatchFromLocation2`
+
+### Python Environment (Optional)
+- Python 3.6+
+- MATLAB Engine API for Python
+- NumPy
+- MATLAB R2018b or later (for backend processing)
+
+### Custom Functions
+- `manualRidgeRegressionCustom.m`
+- `SpikeDetection.Detector`
+- `getNaturalImagePatchFromLocation2_universal.m` ⭐ **Universal function**
 
 ## Installation
 
+### MATLAB Setup
 ```matlab
 % Clone the repository
-git clone https://github.com/your-username/spikeTriggeredMoments.git
+git clone https://github.com/maxwellsdm1867/spikeTriggeredMoments.git
 
 % Add to MATLAB path
 addpath('/path/to/spikeTriggeredMoments');
@@ -49,6 +72,70 @@ addpath('/path/to/spikeTriggeredMoments');
 % Ensure Rieke Lab framework is in path
 addpath('/path/to/rieke-lab-analysis');
 ```
+
+### Python Setup (Optional)
+```bash
+# Install MATLAB Engine API for Python
+cd "matlabroot/extern/engines/python"
+python setup.py install
+
+# Install additional Python dependencies
+pip install numpy
+```
+
+## 🌟 Universal Natural Image Patch Extraction
+
+This toolkit features a **revolutionary universal function** that can be called seamlessly from both MATLAB and Python environments, eliminating the need for separate function versions.
+
+### Key Innovation: One Function, Two Environments
+
+**`getNaturalImagePatchFromLocation2_universal.m`** automatically detects whether it's being called from MATLAB or Python and optimizes its behavior accordingly.
+
+#### From MATLAB:
+```matlab
+% Extract patches using the universal function
+patches = getNaturalImagePatchFromLocation2_universal([[100,100]; [200,200]], 'image001', 'verbose', true);
+fprintf('Called from: %s\n', patches.metadata.callingEnvironment);  % Output: 'MATLAB'
+```
+
+#### From Python:
+```python
+import matlab.engine
+eng = matlab.engine.start_matlab()
+
+# Call the SAME universal function
+locations = matlab.double([[100, 100], [200, 200]])
+result = eng.getNaturalImagePatchFromLocation2_universal(locations, 'image001', 'verbose', True, nargout=1)
+print(f"Called from: {result['metadata']['callingEnvironment']}")  # Output: 'Python'
+```
+
+#### From Python (Using Wrappers):
+```python
+# Simple functional interface
+from simple_patch_extractor import extract_patches
+patches = extract_patches([[100, 100], [200, 200]], 'image001', verbose=True)
+
+# Class-based interface
+from natural_image_patch_extractor import NaturalImagePatchExtractor
+extractor = NaturalImagePatchExtractor()
+patches = extractor.extract_patches([[100, 100], [200, 200]], 'image001')
+```
+
+### Benefits of Universal Approach
+
+- ✅ **Single source of truth** - One function, no version conflicts
+- ✅ **Consistent results** - Identical output from MATLAB and Python
+- ✅ **Easy maintenance** - Update one function, benefit everywhere
+- ✅ **Cross-platform** - Works on Windows, macOS, and Linux
+- ✅ **Auto-detection** - Finds natural image directories automatically
+- ✅ **Future-proof** - Easy to extend and modify
+
+### Quick Start Examples
+
+For comprehensive usage examples, see:
+- `universal_function_examples_matlab.m` - MATLAB examples
+- `universal_function_examples_python.py` - Python examples  
+- `UNIVERSAL_FUNCTION_GUIDE.md` - Complete documentation
 
 ## Algorithm Overview
 
@@ -72,7 +159,7 @@ The toolkit processes visual stimuli using filtered Gaussian noise that is appli
    noiseMatrix = noiseMatrix / std(noiseMatrix(:));
    ```
 
-4. **Patch Sampling**: Natural image patches are sampled from specified locations using `getNaturalImagePatchFromLocation2()`
+4. **Patch Sampling**: Natural image patches are sampled from specified locations using the **universal function** `getNaturalImagePatchFromLocation2_universal()`, which works seamlessly from both MATLAB and Python environments
 
 5. **Trial Structure**: Each epoch contains multiple noise repeats (`numNoiseRepeats`) with precise timing based on `preTime`, `stimTime`, and `tailTime`
 
@@ -156,7 +243,7 @@ r2_holdout = 1 - sum((actual - predicted).^2) / sum((actual - mean(actual)).^2);
 
 ## Quick Start
 
-### Basic Analysis
+### Option 1: MATLAB Analysis (Traditional)
 
 ```matlab
 % 1. Set up the workspace environment
@@ -193,6 +280,55 @@ run('spikeTriggerMoments.m');
 % - moment1, moment2, moment3: Computed moments
 % - a_estimated: Moment contributions [mean, second, third]
 % - weights_real: Actual data weights
+```
+
+### Option 2: Python Interface (Modern)
+
+```python
+# Extract natural image patches using Python
+from simple_patch_extractor import extract_patches
+
+# Same universal function used in MATLAB!
+patches = extract_patches(
+    patch_locations=[[100, 100], [200, 200], [300, 300]],
+    image_name='image001',
+    patch_size=(150.0, 150.0),
+    verbose=True
+)
+
+print(f"Extracted {len(patches['images'])} patches")
+print(f"Valid patches: {patches['metadata']['num_valid_patches']}")
+print(f"Called from: {patches['metadata']['calling_environment']}")
+
+# Use patches in your Python analysis pipeline
+import numpy as np
+valid_patches = [img for img in patches['images'] if img is not None]
+mean_intensities = [np.mean(patch) for patch in valid_patches]
+```
+
+### Option 3: Hybrid Workflow
+
+```python
+# Python preprocessing and patch extraction
+from natural_image_patch_extractor import NaturalImagePatchExtractor
+
+with NaturalImagePatchExtractor() as extractor:
+    patches = extractor.extract_patches(locations, 'image001')
+    
+# Export to MATLAB format for spike analysis
+import scipy.io
+scipy.io.savemat('patches_for_matlab.mat', {
+    'patches': patches['images'],
+    'locations': patches['patch_info']
+})
+```
+
+```matlab
+% Load Python-extracted patches in MATLAB
+load('patches_for_matlab.mat');
+
+% Continue with spike-triggered moment analysis
+run('spikeTriggerMoments.m');
 ```
 
 ### Synthetic Data Testing
@@ -264,18 +400,39 @@ fprintf('Hold-out R²: %.3f\n', r2_holdout);
 
 ## File Descriptions
 
-### Core Analysis Scripts
+### Core Analysis Scripts (MATLAB)
 
+- **`spike_triggered_moments_master.m`**: 🆕 Unified master script for complete spike-triggered moment analysis
 - **`spikeTriggerMoments.m`**: Main analysis pipeline with full experimental data processing
 - **`stm_clean.m`**: Streamlined version with cross-validation and moment decomposition  
 - **`stm_cross_valid.m`**: Dedicated cross-validation analysis script
 - **`stm_text.m`**: Synthetic data testing using 2D pink noise stimuli
 
-### Key Functions Required
+### Universal Natural Image Processing
+
+- **`getNaturalImagePatchFromLocation2_universal.m`**: 🌟 **Universal function** callable from both MATLAB and Python
+- **`simple_patch_extractor.py`**: Simple Python interface (calls universal function)
+- **`natural_image_patch_extractor.py`**: Class-based Python interface (calls universal function)
+
+### Documentation and Examples
+
+- **`UNIVERSAL_FUNCTION_GUIDE.md`**: Complete guide for the universal function approach
+- **`universal_function_examples_matlab.m`**: MATLAB usage examples
+- **`universal_function_examples_python.py`**: Python usage examples
+- **`IMPLEMENTATION_COMPLETE.md`**: Implementation summary and benefits
+
+### Legacy Functions (Deprecated)
+
+- **`getNaturalImagePatchFromLocation2.m`**: Original patch extraction function
+- **`getNaturalImagePatchFromLocation2_improved.m`**: Enhanced version
+- **`getNaturalImagePatchFromLocation2_python.m`**: Python-specific version
+
+> **Note**: Use the universal function for all new development. Legacy functions are maintained for compatibility but will be removed in future versions.
+
+### Required Dependencies
 
 - **`manualRidgeRegressionCustom.m`**: Custom ridge regression implementation
 - **`SpikeDetection.Detector`**: Spike detection from voltage traces
-- **`getNaturalImagePatchFromLocation2`**: Natural image patch extraction
 - **Rieke Lab Framework**: Data loading and experimental protocol handling
 
 ## Data Structures
@@ -371,23 +528,123 @@ fprintf('Estimated sec_scale: %.4f\n', sec_scale_estimated);
 fprintf('True sec_scale: %.4f\n', sec_scale);
 ```
 
+## Project Structure
+
+```
+spikeTriggeredMoments/
+├── 📊 Core Analysis (MATLAB)
+│   ├── spike_triggered_moments_master.m        # Unified master script
+│   ├── spikeTriggerMoments.m                   # Main analysis pipeline
+│   ├── stm_clean.m                             # Streamlined analysis + cross-validation
+│   ├── stm_cross_valid.m                       # Cross-validation analysis
+│   └── stm_text.m                              # Synthetic data testing
+│
+├── 🌟 Universal Natural Image Processing
+│   ├── getNaturalImagePatchFromLocation2_universal.m  # Universal MATLAB function
+│   ├── simple_patch_extractor.py              # Simple Python interface
+│   └── natural_image_patch_extractor.py       # Class-based Python interface
+│
+├── 📚 Documentation & Examples
+│   ├── README.md                               # This comprehensive guide
+│   ├── UNIVERSAL_FUNCTION_GUIDE.md             # Universal function documentation
+│   ├── IMPLEMENTATION_COMPLETE.md              # Implementation summary
+│   ├── universal_function_examples_matlab.m    # MATLAB examples
+│   └── universal_function_examples_python.py   # Python examples
+│
+├── 🔧 Legacy Functions (Deprecated)
+│   ├── getNaturalImagePatchFromLocation2.m     # Original function
+│   ├── getNaturalImagePatchFromLocation2_improved.m  # Enhanced version
+│   └── getNaturalImagePatchFromLocation2_python.m    # Python-specific version
+│
+└── 📦 Configuration
+    └── pyproject.toml                          # Python project configuration
+```
+
+## Usage Scenarios
+
+### 🧠 Neuroscience Researchers
+- Analyze spike-triggered moments in retinal ganglion cells
+- Decompose neural responses to natural image stimuli
+- Cross-validate moment-based models of neural computation
+
+### 🐍 Python Developers  
+- Extract natural image patches using Python workflows
+- Integrate MATLAB image processing with Python analysis pipelines
+- Build reproducible research pipelines with version control
+
+### 🔬 Method Developers
+- Test new stimulus decomposition approaches
+- Validate algorithms with synthetic data
+- Develop cross-platform analysis tools
+
+### 👥 Collaborative Teams
+- Share analysis code between MATLAB and Python users
+- Ensure reproducible results across different environments
+- Maintain single codebase for mixed research teams
+
+## Getting Help
+
+### 📖 Documentation
+- **README.md** - This comprehensive guide
+- **UNIVERSAL_FUNCTION_GUIDE.md** - Detailed universal function documentation
+- **Function help**: `help getNaturalImagePatchFromLocation2_universal` in MATLAB
+
+### 🔧 Troubleshooting
+- Check MATLAB Engine API installation for Python usage
+- Ensure natural image directories are accessible
+- Verify Rieke Lab framework is properly installed
+- See troubleshooting section in UNIVERSAL_FUNCTION_GUIDE.md
+
+### 💡 Examples
+- Run `universal_function_examples_matlab.m` for MATLAB examples
+- Run `python universal_function_examples_python.py` for Python examples
+- Check test functions in Python modules for usage patterns
+
+## Contributing
+
+We welcome contributions! Please:
+
+1. **Fork the repository** on GitHub
+2. **Create a feature branch** for your changes
+3. **Test thoroughly** with both MATLAB and Python interfaces
+4. **Update documentation** as needed
+5. **Submit a pull request** with clear description
+
+### Development Guidelines
+- Maintain compatibility with both MATLAB and Python
+- Add comprehensive tests for new features
+- Update documentation and examples
+- Follow existing code style and conventions
+
 ## Citation
 
 If you use this toolkit in your research, please cite:
 
 ```bibtex
-@software{spike_triggered_moments_matlab,
-  title={Spike Triggered Moments: MATLAB Toolkit for Neural Response Decomposition},
-  author={Your Name},
+@software{spike_triggered_moments_universal,
+  title={Spike Triggered Moments: Universal Toolkit for Neural Response Decomposition},
+  author={Maxwell S.D.M. and Rieke Lab},
   year={2025},
-  url={https://github.com/your-username/spikeTriggeredMoments}
+  url={https://github.com/maxwellsdm1867/spikeTriggeredMoments},
+  note={Features universal MATLAB/Python natural image patch extraction}
 }
 ```
 
 ## License
 
-MIT License
+MIT License - see LICENSE file for details.
 
-## Contributing
+## Acknowledgments
 
-Contributions are welcome! Please read our contributing guidelines for details.
+- **Rieke Lab** at University of Washington for the analysis framework
+- **MATLAB** and **Python** communities for excellent cross-platform tools
+- **Open source contributors** who make reproducible research possible
+
+---
+
+**🚀 Ready to get started?** 
+- MATLAB users: Run `universal_function_examples_matlab.m`
+- Python users: Run `python universal_function_examples_python.py`
+- Both: Check out `UNIVERSAL_FUNCTION_GUIDE.md` for comprehensive documentation
+
+**One function, two environments, endless possibilities! 🌟**
