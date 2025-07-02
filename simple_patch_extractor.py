@@ -1,12 +1,13 @@
 """
 Simple Python Interface for Natural Image Patch Extraction
 
-This module provides a simplified Python interface to the universal MATLAB-based 
-natural image patch extraction function. The same MATLAB function can be called 
-directly from MATLAB or through this Python interface - no separate versions needed!
+This module provides the RECOMMENDED Python interface to the universal MATLAB-based 
+natural image patch extraction function. This wrapper handles all MATLAB Engine 
+complexity automatically, providing a clean, Pythonic interface.
 
-The universal function automatically detects whether it's being called from MATLAB 
-or Python and optimizes its behavior accordingly.
+The underlying universal function automatically detects whether it's being called 
+from MATLAB or Python and optimizes its behavior accordingly. This wrapper is the 
+preferred way for Python users to access the functionality.
 
 Requirements:
     - MATLAB R2018b or later
@@ -19,15 +20,17 @@ Installation of MATLAB Engine for Python:
     2. cd "matlabroot/extern/engines/python"
     3. python setup.py install
 
-Example Usage:
+Recommended Usage:
     from simple_patch_extractor import extract_patches
     
-    # Same function used in MATLAB and Python!
+    # Clean, Pythonic interface - no MATLAB Engine management needed!
     patches = extract_patches(
         patch_locations=[[100, 100], [200, 200]],
         image_name='image001',
         verbose=True
     )
+    
+    # Same universal function used in MATLAB, called automatically for you!
 """
 
 import numpy as np
@@ -315,7 +318,7 @@ def test_custom_parameters():
 
 
 if __name__ == "__main__":
-    print("Natural Image Patch Extractor - Simple Python Interface")
+    print("Natural Image Patch Extractor - Python Wrapper (RECOMMENDED)")
     print("=" * 60)
     
     # Check if MATLAB Engine API is available
@@ -329,18 +332,25 @@ if __name__ == "__main__":
     
     # Run tests
     print(f"\nCurrent working directory: {os.getcwd()}")
+    print("This Python wrapper provides:")
+    print("• Clean, Pythonic interface to universal MATLAB function")
+    print("• Automatic MATLAB Engine management (no manual startup/cleanup)")
+    print("• Seamless data conversion between Python and MATLAB")
+    print("• Same results as calling function directly from MATLAB")
+    print()
+    
     print("Make sure you have:")
     print("1. MATLAB function 'getNaturalImagePatchFromLocation2_universal.m' in current directory")
     print("2. Natural image files accessible")
     print("3. Valid image name for testing")
-    print("4. Same function works from both MATLAB and Python!")
     print()
     
     # Uncomment to run tests (update image_name first!)
     # basic_result = test_basic_extraction()
     # custom_result = test_custom_parameters()
     
-    print("\nTo use this module:")
+    print("\nRecommended usage:")
     print("1. Update the image_name in test functions to match your data")
     print("2. Ensure natural image files are accessible")
     print("3. Run: from simple_patch_extractor import extract_patches")
+    print("4. Use this wrapper instead of calling MATLAB directly!")
