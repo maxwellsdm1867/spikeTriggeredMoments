@@ -56,11 +56,25 @@ addpath('/path/to/rieke-lab-analysis');
 
 The toolkit processes visual stimuli using filtered Gaussian noise that is applied to natural image patches during the FlashedGratePlusNoise protocol:
 
-1. **Noise Generation**: Gaussian white noise is generated for each trial using seeded random streams (`RandStream('mt19937ar', 'Seed', noiseSeed)`)
-2. **Spatial Filtering**: Noise is spatially filtered using `imgaussfilt()` with specified standard deviation (`noiseFilterSD`)
-3. **Normalization**: Filtered noise is normalized by its standard deviation to maintain consistent contrast
+1. **Noise Generation**: For each epoch, a seeded random stream is created and Gaussian white noise is generated:
+
+   ```matlab
+   noiseStream = RandStream('mt19937ar', 'Seed', noiseSeed);
+   noiseFilterSD = SampleEpoch.protocolSettings.get('noiseFilterSD');
+   noiseMatrix = imgaussfilt(noiseStream.randn(imageSize(1), imageSize(2)), noiseFilterSD);
+   ```
+
+2. **Spatial Filtering**: The white noise is spatially filtered using `imgaussfilt()` with the `noiseFilterSD` parameter from the protocol settings
+
+3. **Normalization**: Filtered noise is normalized by its standard deviation to maintain consistent contrast:
+
+   ```matlab
+   noiseMatrix = noiseMatrix / std(noiseMatrix(:));
+   ```
+
 4. **Patch Sampling**: Natural image patches are sampled from specified locations using `getNaturalImagePatchFromLocation2()`
-5. **Trial Structure**: Each epoch contains multiple noise repeats with precise timing based on `preTime`, `stimTime`, and `tailTime`
+
+5. **Trial Structure**: Each epoch contains multiple noise repeats (`numNoiseRepeats`) with precise timing based on `preTime`, `stimTime`, and `tailTime`
 
 ### Core Methodology
 
