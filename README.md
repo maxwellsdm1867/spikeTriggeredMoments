@@ -91,35 +91,26 @@ This toolkit features a **revolutionary universal function** that can be called 
 
 **`getNaturalImagePatchFromLocation2_universal.m`** automatically detects whether it's being called from MATLAB or Python and optimizes its behavior accordingly.
 
-#### From MATLAB:
+#### From MATLAB (Direct):
 ```matlab
 % Extract patches using the universal function
 patches = getNaturalImagePatchFromLocation2_universal([[100,100]; [200,200]], 'image001', 'verbose', true);
 fprintf('Called from: %s\n', patches.metadata.callingEnvironment);  % Output: 'MATLAB'
 ```
 
-#### From Python:
+#### From Python (Recommended - Use Python Wrapper):
 ```python
-import matlab.engine
-eng = matlab.engine.start_matlab()
-
-# Call the SAME universal function
-locations = matlab.double([[100, 100], [200, 200]])
-result = eng.getNaturalImagePatchFromLocation2_universal(locations, 'image001', 'verbose', True, nargout=1)
-print(f"Called from: {result['metadata']['callingEnvironment']}")  # Output: 'Python'
-```
-
-#### From Python (Using Wrappers):
-```python
-# Simple functional interface
+# Simple functional interface (RECOMMENDED)
 from simple_patch_extractor import extract_patches
 patches = extract_patches([[100, 100], [200, 200]], 'image001', verbose=True)
 
-# Class-based interface
+# Class-based interface (RECOMMENDED)
 from natural_image_patch_extractor import NaturalImagePatchExtractor
 extractor = NaturalImagePatchExtractor()
 patches = extractor.extract_patches([[100, 100], [200, 200]], 'image001')
 ```
+
+> **📍 Python Users**: Use the Python wrappers above instead of calling MATLAB functions directly. The wrappers handle all the MATLAB Engine complexity for you and provide a clean Python interface!
 
 ### Benefits of Universal Approach
 
@@ -411,8 +402,10 @@ fprintf('Hold-out R²: %.3f\n', r2_holdout);
 ### Universal Natural Image Processing
 
 - **`getNaturalImagePatchFromLocation2_universal.m`**: 🌟 **Universal function** callable from both MATLAB and Python
-- **`simple_patch_extractor.py`**: Simple Python interface (calls universal function)
-- **`natural_image_patch_extractor.py`**: Class-based Python interface (calls universal function)
+- **`simple_patch_extractor.py`**: 🐍 **Python wrapper (RECOMMENDED)** - Simple functional interface
+- **`natural_image_patch_extractor.py`**: 🐍 **Python wrapper (RECOMMENDED)** - Class-based interface
+
+> **📍 For Python Users**: Use the Python wrappers above! They provide a clean, Pythonic interface to the universal function without needing to manage MATLAB Engine directly.
 
 ### Documentation and Examples
 
@@ -421,13 +414,12 @@ fprintf('Hold-out R²: %.3f\n', r2_holdout);
 - **`universal_function_examples_python.py`**: Python usage examples
 - **`IMPLEMENTATION_COMPLETE.md`**: Implementation summary and benefits
 
-### Legacy Functions (Deprecated)
+### Legacy Functions (For Reference Only)
 
 - **`getNaturalImagePatchFromLocation2.m`**: Original patch extraction function
 - **`getNaturalImagePatchFromLocation2_improved.m`**: Enhanced version
-- **`getNaturalImagePatchFromLocation2_python.m`**: Python-specific version
 
-> **Note**: Use the universal function for all new development. Legacy functions are maintained for compatibility but will be removed in future versions.
+> **⚠️ Important**: Use the universal function and Python wrappers for all new development. Legacy functions are maintained for reference only.
 
 ### Required Dependencies
 
@@ -541,8 +533,8 @@ spikeTriggeredMoments/
 │
 ├── 🌟 Universal Natural Image Processing
 │   ├── getNaturalImagePatchFromLocation2_universal.m  # Universal MATLAB function
-│   ├── simple_patch_extractor.py              # Simple Python interface
-│   └── natural_image_patch_extractor.py       # Class-based Python interface
+│   ├── simple_patch_extractor.py              # 🐍 Python wrapper (RECOMMENDED)
+│   └── natural_image_patch_extractor.py       # 🐍 Python wrapper (RECOMMENDED)
 │
 ├── 📚 Documentation & Examples
 │   ├── README.md                               # This comprehensive guide
@@ -551,14 +543,18 @@ spikeTriggeredMoments/
 │   ├── universal_function_examples_matlab.m    # MATLAB examples
 │   └── universal_function_examples_python.py   # Python examples
 │
-├── 🔧 Legacy Functions (Deprecated)
+├── 🔧 Legacy Functions (For Reference)
 │   ├── getNaturalImagePatchFromLocation2.m     # Original function
-│   ├── getNaturalImagePatchFromLocation2_improved.m  # Enhanced version
-│   └── getNaturalImagePatchFromLocation2_python.m    # Python-specific version
+│   └── getNaturalImagePatchFromLocation2_improved.m  # Enhanced version
 │
 └── 📦 Configuration
     └── pyproject.toml                          # Python project configuration
 ```
+
+> **📍 Recommended Usage**:
+> - **MATLAB users**: Use `getNaturalImagePatchFromLocation2_universal.m` directly
+> - **Python users**: Use `simple_patch_extractor.py` or `natural_image_patch_extractor.py` wrappers
+> - **Both**: Avoid legacy functions and use the universal approach for consistency
 
 ## Usage Scenarios
 

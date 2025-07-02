@@ -51,12 +51,34 @@ result = getNaturalImagePatchFromLocation2_universal(...
 fprintf('Called from: %s\n', result.metadata.callingEnvironment);
 ```
 
-### From Python (Direct Call)
+### From Python (Recommended - Use Python Wrapper)
+```python
+# Simple functional interface (RECOMMENDED)
+from simple_patch_extractor import extract_patches
+
+patches = extract_patches(
+    patch_locations=[[100, 100], [200, 200]],
+    image_name='image001',
+    patch_size=(150.0, 150.0),
+    verbose=True
+)
+
+# Class-based interface (RECOMMENDED)
+from natural_image_patch_extractor import NaturalImagePatchExtractor
+
+with NaturalImagePatchExtractor() as extractor:
+    patches = extractor.extract_patches(
+        [[100, 100], [200, 200]], 
+        'image001'
+    )
+```
+
+### From Python (Advanced - Direct MATLAB Call)
 ```python
 import matlab.engine
 import matlab
 
-# Start MATLAB engine
+# Start MATLAB engine (handled automatically by wrappers)
 eng = matlab.engine.start_matlab()
 
 # Convert data to MATLAB format
@@ -69,22 +91,15 @@ result = eng.getNaturalImagePatchFromLocation2_universal(
     'patchSize', matlab.double([150.0, 150.0]),
     nargout=1
 )
-
 print(f"Called from: {result['metadata']['callingEnvironment']}")
 ```
 
-### From Python (Using Wrapper)
-```python
-from simple_patch_extractor import extract_patches
-
-# The wrapper internally calls the universal function
-patches = extract_patches(
-    patch_locations=[[100, 100], [200, 200]],
-    image_name='image001',
-    patch_size=(150.0, 150.0),
-    verbose=True
-)
-```
+> **📍 Important for Python Users**: While direct MATLAB calls work, we **strongly recommend using the Python wrappers** (`simple_patch_extractor.py` or `natural_image_patch_extractor.py`) as they:
+> - Handle MATLAB Engine startup/cleanup automatically
+> - Provide Pythonic interfaces with proper type hints
+> - Convert data formats seamlessly
+> - Include comprehensive error handling
+> - Are easier to use and maintain
 
 ## Function Features
 
@@ -135,19 +150,19 @@ cd "matlabroot/extern/engines/python"
 python setup.py install
 ```
 
-Then use any of the Python interfaces:
+Then use the Python interfaces (recommended):
 ```python
-# Direct call
-result = eng.getNaturalImagePatchFromLocation2_universal(...)
-
-# Or wrapper function
+# Simple wrapper function (RECOMMENDED)
 from simple_patch_extractor import extract_patches
 patches = extract_patches(...)
 
-# Or class interface
+# Class interface (RECOMMENDED)
 from natural_image_patch_extractor import NaturalImagePatchExtractor
 extractor = NaturalImagePatchExtractor()
 patches = extractor.extract_patches(...)
+
+# Advanced: Direct call (not recommended for most users)
+# result = eng.getNaturalImagePatchFromLocation2_universal(...)
 ```
 
 ## File Organization
