@@ -57,7 +57,9 @@ The toolkit analyzes data from the **FlashedGratePlusNoise protocol** and uses *
 ### Custom Functions
 - `manualRidgeRegressionCustom.m`
 - `SpikeDetection.Detector`
-- `getNaturalImagePatchFromLocation2_universal.m` ⭐ **Universal function**
+- `getNaturalImagePatchFromLocation2_universal.m` ⭐ **RECOMMENDED: Use this universal function for all natural image processing**
+
+> **⚠️ Important**: For all new development, use `getNaturalImagePatchFromLocation2_universal.m`. This function provides the same interface as the original `getNaturalImagePatchFromLocation2.m` but with enhanced features, error handling, and Python compatibility.
 
 ## Installation
 
@@ -150,7 +152,11 @@ The toolkit processes visual stimuli using filtered Gaussian noise that is appli
    noiseMatrix = noiseMatrix / std(noiseMatrix(:));
    ```
 
-4. **Patch Sampling**: Natural image patches are sampled from specified locations using the **universal function** `getNaturalImagePatchFromLocation2_universal()`, which works seamlessly from both MATLAB and Python environments
+4. **Patch Sampling**: Natural image patches are sampled from specified locations using the **universal function** `getNaturalImagePatchFromLocation2_universal()`, which:
+   - Works seamlessly from both MATLAB and Python environments
+   - Maintains full backward compatibility with the original function
+   - Provides enhanced error handling and cross-platform support
+   - **RECOMMENDED**: Replace all uses of `getNaturalImagePatchFromLocation2()` with this universal version
 
 5. **Trial Structure**: Each epoch contains multiple noise repeats (`numNoiseRepeats`) with precise timing based on `preTime`, `stimTime`, and `tailTime`
 
@@ -234,13 +240,13 @@ r2_holdout = 1 - sum((actual - predicted).^2) / sum((actual - mean(actual)).^2);
 
 ## Quick Start
 
-### Option 1: MATLAB Analysis (Traditional)
+### Option 1: MATLAB Analysis (Recommended)
 
 ```matlab
 % 1. Set up the workspace environment
 close all; clear all; clc;
 
-% 2. Configure analysis parameters
+% 2. Configure analysis parameters  
 params.FrequencyCutoff = 500;
 params.Amp = 'Amp1';
 params.SamplingInterval = 0.0001;
@@ -261,10 +267,14 @@ gui = epochTreeGUI(tree);
 node = gui.getSelectedEpochTreeNodes;
 cdt_node = node{1};
 
-% 6. Run the complete analysis
+% 6. Extract natural image patches using UNIVERSAL function (RECOMMENDED)
+patchLocations = [[100, 100]; [200, 200]; [300, 300]]; % Example locations
+patches = getNaturalImagePatchFromLocation2_universal(patchLocations, 'image001', 'verbose', true);
+
+% 7. Run the complete spike-triggered moment analysis
 run('spikeTriggerMoments.m');
 
-% 7. The analysis creates these key variables:
+% 8. The analysis creates these key variables:
 % - STA{1}: Spike-triggered average
 % - rf_mask: Receptive field mask
 % - SpikeCounts: Spike counts per trial
@@ -276,10 +286,10 @@ run('spikeTriggerMoments.m');
 ### Option 2: Python Interface (Modern)
 
 ```python
-# Extract natural image patches using Python
+# Extract natural image patches using Python wrapper (RECOMMENDED)
 from simple_patch_extractor import extract_patches
 
-# Same universal function used in MATLAB!
+# Same universal function used internally - no separate versions!
 patches = extract_patches(
     patch_locations=[[100, 100], [200, 200], [300, 300]],
     image_name='image001',
@@ -289,7 +299,7 @@ patches = extract_patches(
 
 print(f"Extracted {len(patches['images'])} patches")
 print(f"Valid patches: {patches['metadata']['num_valid_patches']}")
-print(f"Called from: {patches['metadata']['calling_environment']}")
+print(f"Function used: getNaturalImagePatchFromLocation2_universal")
 
 # Use patches in your Python analysis pipeline
 import numpy as np
