@@ -2,6 +2,13 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
 % GETNATURALIMAGEPATCHFROMLOCATION_UNIVERSAL - Universal natural image patch extraction function
 %
 % ⭐ RECOMMENDED: Use this function for all natural image patch extraction needs!
+% 🧪 PLEASE TEST: This is a new universal function - please test with your data!
+%
+% ⚠️  IMPORTANT NOTICE FOR USERS:
+%   This function replaces getNaturalImagePatchFromLocation2 with enhanced features.
+%   PLEASE TEST this new function with your typical workflows and data to ensure
+%   it works correctly for your use case. Report any issues or unexpected behavior.
+%   The function now REQUIRES you to specify the 'resourcesDir' parameter.
 %
 % DESCRIPTION:
 %   Universal function for extracting natural image patches that works seamlessly
@@ -10,16 +17,16 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
 %   enhanced features, error handling, and cross-platform support.
 %
 % USAGE:
-%   % MATLAB (recommended):
-%   res = getNaturalImagePatchFromLocation2_universal(patchLocations, imageName)
-%   res = getNaturalImagePatchFromLocation2_universal(patchLocations, imageName, 'verbose', true)
+%   % MATLAB (recommended - PLEASE TEST THIS NEW FUNCTION):
+%   res = getNaturalImagePatchFromLocation_universal(patchLocations, imageName, 'resourcesDir', '/your/path')
+%   res = getNaturalImagePatchFromLocation_universal(patchLocations, imageName, 'resourcesDir', '/your/path', 'verbose', true)
 %   
 %   % Python (use wrapper - RECOMMENDED):
 %   from simple_patch_extractor import extract_patches
-%   result = extract_patches(patch_locations, image_name, verbose=True)
+%   result = extract_patches(patch_locations, image_name, resources_dir='/your/path', verbose=True)
 %   
 %   % Python (direct call):
-%   result = eng.getNaturalImagePatchFromLocation2_universal(locations, image_name, nargout=1)
+%   result = eng.getNaturalImagePatchFromLocation_universal(locations, image_name, 'resourcesDir', '/your/path', nargout=1)
 %
 % INPUTS:
 %   patchLocations - N x 2 matrix of [x, y] coordinates for patch centers (pixels)
@@ -47,38 +54,59 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
 % BACKWARD COMPATIBILITY:
 %   This function is a drop-in replacement for getNaturalImagePatchFromLocation2:
 %   
-%   % Old way:
+%   % Old way (original function):
 %   res = getNaturalImagePatchFromLocation2(locations, 'image001', 'imageSize', [200, 200]);
 %   
-%   % New way (same result, enhanced features):
-%   res = getNaturalImagePatchFromLocation2_universal(locations, 'image001', 'imageSize', [200, 200]);
+%   % New way (PLEASE USE AND TEST THIS):
+%   res = getNaturalImagePatchFromLocation_universal(locations, 'image001', ...
+%       'resourcesDir', '/path/to/natural/images', 'imageSize', [200, 200]);
 %
 % EXAMPLES:
+%   % ⚠️  IMPORTANT: PLEASE TEST THIS NEW FUNCTION WITH YOUR DATA! ⚠️
+%   
 %   % Basic usage (must specify resourcesDir)
-%   patches = getNaturalImagePatchFromLocation2_universal([[100, 100]; [200, 200]], 'image001', ...
+%   patches = getNaturalImagePatchFromLocation_universal([[100, 100]; [200, 200]], 'image001', ...
 %       'resourcesDir', '/path/to/your/natural/images');
 %   
 %   % Enhanced usage with new features
-%   result = getNaturalImagePatchFromLocation2_universal(...
+%   result = getNaturalImagePatchFromLocation_universal(...
 %       [[100, 100]; [200, 200]], 'image001', ...
 %       'resourcesDir', '/path/to/your/natural/images', ...
 %       'patchSize', [150, 150], 'verbose', true, 'normalize', true);
 %   
 %   % Check patch extraction quality
 %   fprintf('Valid patches: %d/%d\n', result.metadata.numValidPatches, length(result.images));
+%   
+%   % Test with your typical use case:
+%   % Replace your old getNaturalImagePatchFromLocation2 calls with this function
+%   % and verify the results match your expectations!
 %
 % MIGRATION GUIDE:
+%   ⭐ PLEASE MIGRATE TO AND TEST THIS NEW FUNCTION! ⭐
+%   
 %   Replace all calls to getNaturalImagePatchFromLocation2 with this function:
-%   - Same interface and results as original function
+%   - Same interface and results as original getNaturalImagePatchFromLocation2 function
 %   - Additional features: error handling, cross-platform support, Python compatibility
 %   - Enhanced output structure with metadata and patch information
+%   - Now requires explicit resourcesDir parameter (no auto-detection)
+%   
+%   TESTING CHECKLIST:
+%   □ Test with your typical patch locations and image names
+%   □ Verify extracted patches match your expectations
+%   □ Check that metadata contains useful information
+%   □ Test with both normalized and non-normalized images
+%   □ Verify Python compatibility if you use Python workflows
 %
 % NOTES:
 %   - Automatically detects calling environment (MATLAB vs Python)
 %   - Optimizes output format based on calling environment
 %   - Cross-platform directory detection and path handling
 %   - Robust error handling with informative messages
-%   - Full backward compatibility with original function
+%   - Full backward compatibility with original getNaturalImagePatchFromLocation2 function
+%   - User must now specify resourcesDir parameter (no auto-detection for reliability)
+%   
+%   🔍 TESTING NEEDED: Please test this function thoroughly with your data and workflows!
+%   Report any issues, unexpected behavior, or suggestions for improvement.
 %
 % COMPATIBILITY:
 %   - MATLAB R2018b and later
