@@ -10,6 +10,7 @@ This report analyzes the MATLAB code for potential syntax errors, dependency iss
 - `stm_cross_valid.m` - Cross-validation implementation
 - `stm_text.m` - Text-based analysis
 - `manualRidgeRegressionCustom.m` - Ridge regression implementation
+- `getNaturalImagePatchFromLocation2.m` - Natural image patch extraction
 
 ## Validation Results
 
@@ -22,6 +23,7 @@ This report analyzes the MATLAB code for potential syntax errors, dependency iss
 
 ### ✅ DEPENDENCY VALIDATION
 - `manualRidgeRegressionCustom.m` is present in workspace
+- `getNaturalImagePatchFromLocation2.m` is present in workspace (improved with error handling)
 - Required Rieke Lab dependencies are documented
 - Function calls match expected signatures
 
@@ -46,6 +48,7 @@ The synthetic data generation section:
 1. **Experimental Data Dependencies**:
    - Requires Rieke Lab framework for experimental mode
    - `epochTreeGUI` may need user interaction
+   - Natural image files must be available at specified paths for `getNaturalImagePatchFromLocation2`
    - File paths may need adjustment for different systems
 
 2. **Memory Usage**:

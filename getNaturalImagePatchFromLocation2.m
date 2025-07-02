@@ -26,7 +26,7 @@ function res = getNaturalImagePatchFromLocation2(patchLocations,imageName,vararg
     imageSize_VHpix = round(imageSize ./ (6.6)); %um / (um/pixel) -> pixel
     radX = round(imageSize_VHpix(1) / 2); %boundaries for fixation draws depend on stimulus size
     radY = round(imageSize_VHpix(2) / 2);
-    radX
+
     images = cell(1,size(patchLocations,1));
     for ff = 1:size(patchLocations,1);
         images{ff} = img(round(patchLocations(ff,1)-radX+1):round(patchLocations(ff,1)+radX),...
