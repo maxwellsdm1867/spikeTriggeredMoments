@@ -13,7 +13,7 @@ Requirements:
     - MATLAB R2018b or later
     - MATLAB Engine API for Python
     - numpy
-    - getNaturalImagePatchFromLocation2_universal.m (universal MATLAB function)
+    - getNaturalImagePatchFromLocation_universal.m (universal MATLAB function)
 
 Installation of MATLAB Engine for Python:
     1. Navigate to your MATLAB installation directory
@@ -113,7 +113,7 @@ def extract_patches(patch_locations: Union[List[List[float]], np.ndarray],
             ]
             
             for dir_path in possible_dirs:
-                matlab_file = os.path.join(dir_path, 'getNaturalImagePatchFromLocation2_universal.m')
+                matlab_file = os.path.join(dir_path, 'getNaturalImagePatchFromLocation_universal.m')
                 if os.path.exists(matlab_file):
                     eng.addpath(dir_path, nargout=0)
                     if verbose:
@@ -143,7 +143,7 @@ def extract_patches(patch_locations: Union[List[List[float]], np.ndarray],
             print("Calling MATLAB function...")
         
         # Call universal MATLAB function
-        result = eng.getNaturalImagePatchFromLocation2_universal(
+        result = eng.getNaturalImagePatchFromLocation_universal(
             patch_locations_matlab, 
             image_name,
             **kwargs,
@@ -340,7 +340,7 @@ if __name__ == "__main__":
     print()
     
     print("Make sure you have:")
-    print("1. MATLAB function 'getNaturalImagePatchFromLocation2_universal.m' in current directory")
+    print("1. MATLAB function 'getNaturalImagePatchFromLocation_universal.m' in current directory")
     print("2. Natural image files accessible")
     print("3. Valid image name for testing")
     print()

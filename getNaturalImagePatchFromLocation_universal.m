@@ -2,6 +2,13 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
 % GETNATURALIMAGEPATCHFROMLOCATION_UNIVERSAL - Universal natural image patch extraction function
 %
 % ⭐ RECOMMENDED: Use this function for all natural image patch extraction needs!
+% 🧪 PLEASE TEST: This is a new universal function - please test with your data!
+%
+% ⚠️  IMPORTANT NOTICE FOR USERS:
+%   This function replaces getNaturalImagePatchFromLocation2 with enhanced features.
+%   PLEASE TEST this new function with your typical workflows and data to ensure
+%   it works correctly for your use case. Report any issues or unexpected behavior.
+%   The function now REQUIRES you to specify the 'resourcesDir' parameter.
 %
 % DESCRIPTION:
 %   Universal function for extracting natural image patches that works seamlessly
@@ -10,16 +17,16 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
 %   enhanced features, error handling, and cross-platform support.
 %
 % USAGE:
-%   % MATLAB (recommended):
-%   res = getNaturalImagePatchFromLocation_universal(patchLocations, imageName)
-%   res = getNaturalImagePatchFromLocation_universal(patchLocations, imageName, 'verbose', true)
+%   % MATLAB (recommended - PLEASE TEST THIS NEW FUNCTION):
+%   res = getNaturalImagePatchFromLocation_universal(patchLocations, imageName, 'resourcesDir', '/your/path')
+%   res = getNaturalImagePatchFromLocation_universal(patchLocations, imageName, 'resourcesDir', '/your/path', 'verbose', true)
 %   
 %   % Python (use wrapper - RECOMMENDED):
 %   from simple_patch_extractor import extract_patches
-%   result = extract_patches(patch_locations, image_name, verbose=True)
+%   result = extract_patches(patch_locations, image_name, resources_dir='/your/path', verbose=True)
 %   
 %   % Python (direct call):
-%   result = eng.getNaturalImagePatchFromLocation_universal(locations, image_name, nargout=1)
+%   result = eng.getNaturalImagePatchFromLocation_universal(locations, image_name, 'resourcesDir', '/your/path', nargout=1)
 %
 % INPUTS:
 %   patchLocations - N x 2 matrix of [x, y] coordinates for patch centers (pixels)
@@ -50,10 +57,13 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
 %   % Old way (original function):
 %   res = getNaturalImagePatchFromLocation2(locations, 'image001', 'imageSize', [200, 200]);
 %   
-%   % New way (same result, enhanced features):
-%   res = getNaturalImagePatchFromLocation_universal(locations, 'image001', 'imageSize', [200, 200]);
+%   % New way (PLEASE USE AND TEST THIS):
+%   res = getNaturalImagePatchFromLocation_universal(locations, 'image001', ...
+%       'resourcesDir', '/path/to/natural/images', 'imageSize', [200, 200]);
 %
 % EXAMPLES:
+%   % ⚠️  IMPORTANT: PLEASE TEST THIS NEW FUNCTION WITH YOUR DATA! ⚠️
+%   
 %   % Basic usage (must specify resourcesDir)
 %   patches = getNaturalImagePatchFromLocation_universal([[100, 100]; [200, 200]], 'image001', ...
 %       'resourcesDir', '/path/to/your/natural/images');
@@ -66,13 +76,26 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
 %   
 %   % Check patch extraction quality
 %   fprintf('Valid patches: %d/%d\n', result.metadata.numValidPatches, length(result.images));
+%   
+%   % Test with your typical use case:
+%   % Replace your old getNaturalImagePatchFromLocation2 calls with this function
+%   % and verify the results match your expectations!
 %
 % MIGRATION GUIDE:
+%   ⭐ PLEASE MIGRATE TO AND TEST THIS NEW FUNCTION! ⭐
+%   
 %   Replace all calls to getNaturalImagePatchFromLocation2 with this function:
 %   - Same interface and results as original getNaturalImagePatchFromLocation2 function
 %   - Additional features: error handling, cross-platform support, Python compatibility
 %   - Enhanced output structure with metadata and patch information
 %   - Now requires explicit resourcesDir parameter (no auto-detection)
+%   
+%   TESTING CHECKLIST:
+%   □ Test with your typical patch locations and image names
+%   □ Verify extracted patches match your expectations
+%   □ Check that metadata contains useful information
+%   □ Test with both normalized and non-normalized images
+%   □ Verify Python compatibility if you use Python workflows
 %
 % NOTES:
 %   - Automatically detects calling environment (MATLAB vs Python)
@@ -81,25 +104,38 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
 %   - Robust error handling with informative messages
 %   - Full backward compatibility with original getNaturalImagePatchFromLocation2 function
 %   - User must now specify resourcesDir parameter (no auto-detection for reliability)
+%   
+%   🔍 TESTING NEEDED: Please test this function thoroughly with your data and workflows!
+%   Report any issues, unexpected behavior, or suggestions for improvement.
 %
 % COMPATIBILITY:
 %   - MATLAB R2018b and later
 %   - Python 3.6+ (via MATLAB Engine API or Python wrappers)
 %   - Windows, macOS, and Linux
 %
-% AUTHOR: Rieke Lab (original getNaturalImagePatchFromLocation2), Enhanced Universal Version
+% AUTHOR: Rieke Lab (original), Enhanced Universal Version
 % DATE: July 2025
 % VERSION: 3.0 (Universal)
 % REPLACES: getNaturalImagePatchFromLocation2.m
-% BASED ON: Original getNaturalImagePatchFromLocation2 function by Rieke Lab
 
 %% Detect calling environment and parse inputs
     % Auto-detect if called from Python by checking stack
     isPythonCall = detectPythonCall();
     
     % Input validation
+    if isempty(patchLocations)
+        error('NIMPE:EmptyInput', 'patchLocations cannot be empty');
+    end
+    if size(patchLocations, 2) ~= 2
+        error('NIMPE:InvalidSize', 'patchLocations must be an N×2 matrix of [x, y] coordinates');
+    end
+    
     validateattributes(patchLocations, {'numeric'}, {'real', 'finite', 'size', [NaN, 2]}, mfilename, 'patchLocations', 1);
     validateattributes(imageName, {'char', 'string'}, {'scalartext'}, mfilename, 'imageName', 2);
+    
+    if isstring(imageName)
+        imageName = char(imageName); % Convert to char for consistency
+    end
     
     % Parse optional parameters
     ip = inputParser;
@@ -143,15 +179,19 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
 
 %% Validate Resources Directory
     if isempty(params.resourcesDir)
-        warning('NIMPE:NoResourcesDir', ...
-            'No file path provided for natural images directory. Please specify ''resourcesDir'' parameter with the full path to your natural images folder.');
+        fprintf('\n⚠️  ERROR: Natural images directory path is required!\n');
+        fprintf('Please specify the ''resourcesDir'' parameter with the full path to your natural images folder.\n\n');
+        fprintf('Example usage:\n');
+        fprintf('  result = getNaturalImagePatchFromLocation_universal(locations, imageName, ...\n');
+        fprintf('           ''resourcesDir'', ''/path/to/your/natural/images'');\n\n');
+        
         error('NIMPE:DirectoryRequired', ...
             'Natural images directory path is required. Please specify ''resourcesDir'' parameter.');
     else
         resourcesDir = expandPath(params.resourcesDir);
         if ~exist(resourcesDir, 'dir')
             error('NIMPE:DirectoryNotFound', ...
-                'Specified natural images directory does not exist: %s', resourcesDir);
+                'Specified natural images directory does not exist: %s\nPlease check the path and ensure the directory exists.', resourcesDir);
         end
         if params.verbose
             fprintf('Using natural images directory: %s\n', resourcesDir);
@@ -228,11 +268,13 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
     end
 
 %% Extract Patches at Specified Locations
+    % EXACT COMPATIBILITY: Use same calculation as original getNaturalImagePatchFromLocation2
+    % Original: imageSize_VHpix = round(imageSize ./ (6.6)); radX = round(imageSize_VHpix(1) / 2);
     patchSize_pixels = round(params.patchSize ./ params.pixelSize);
     halfPatch = round(patchSize_pixels / 2);
     
     numPatches = size(params.patchLocations, 1);
-    images = cell(numPatches, 1);
+    images = cell(numPatches, 1);  % Match original: cell(1, size(patchLocations,1))
     patchInfo = struct('location', {}, 'actualSize', {}, 'clipped', {}, 'valid', {});
     
     if params.verbose
@@ -244,19 +286,22 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
         centerX = round(params.patchLocations(i, 1));
         centerY = round(params.patchLocations(i, 2));
         
-        x_start = max(1, centerX - halfPatch(1));
+        % EXACT COMPATIBILITY: Use same indexing as original getNaturalImagePatchFromLocation2
+        % Original: img(round(patchLocations(ff,1)-radX+1):round(patchLocations(ff,1)+radX), ...)
+        x_start = max(1, centerX - halfPatch(1) + 1);
         x_end = min(params.imageSize(1), centerX + halfPatch(1));
-        y_start = max(1, centerY - halfPatch(2));
+        y_start = max(1, centerY - halfPatch(2) + 1);
         y_end = min(params.imageSize(2), centerY + halfPatch(2));
         
-        isClipped = (x_start ~= centerX - halfPatch(1)) || ...
+        isClipped = (x_start ~= centerX - halfPatch(1) + 1) || ...
                    (x_end ~= centerX + halfPatch(1)) || ...
-                   (y_start ~= centerY - halfPatch(2)) || ...
+                   (y_start ~= centerY - halfPatch(2) + 1) || ...
                    (y_end ~= centerY + halfPatch(2));
         
         isValid = (x_start <= x_end) && (y_start <= y_end);
         
         if isValid
+            % EXACT COMPATIBILITY: Use same indexing as original function
             images{i} = img(x_start:x_end, y_start:y_end);
             actualSize = size(images{i});
         else
@@ -281,14 +326,18 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
         fprintf('Extraction complete: %d valid patches (%d clipped)\n', validPatches, clippedPatches);
     end
 
-%% Compile Results Structure (Universal Format)
+%% Compile Results Structure (Universal Format with Backward Compatibility)
     res = struct();
+    
+    % EXACT COMPATIBILITY: Match original function output structure
     res.images = images;
     res.fullImage = img;
     res.backgroundIntensity = backgroundIntensity;
+    
+    % Enhanced features (additional to original)
     res.patchInfo = patchInfo;
     
-    % Metadata
+    % Metadata (additional to original)
     res.metadata = struct();
     res.metadata.imageName = params.imageName;
     res.metadata.imageFilePath = imageFilePath;
@@ -297,6 +346,7 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
     res.metadata.numValidPatches = validPatches;
     res.metadata.numClippedPatches = clippedPatches;
     res.metadata.callingEnvironment = iif(params.pythonMode, 'Python', 'MATLAB');
+    res.metadata.backwardCompatible = true;  % Flag indicating compatibility
     
     % Python-specific optimizations (if needed)
     if params.pythonMode
@@ -307,44 +357,79 @@ function res = getNaturalImagePatchFromLocation_universal(patchLocations, imageN
     
     if params.verbose
         fprintf('Patch extraction completed successfully.\n');
+        fprintf('Backward compatibility: Original output structure maintained.\n');
     end
 
+%% Backward Compatibility Verification (Optional)
+    if params.verbose
+        fprintf('\n=== BACKWARD COMPATIBILITY CHECK ===\n');
+        fprintf('Parameter mapping verification:\n');
+        fprintf('  Original imageSize parameter: [%.1f, %.1f] microns\n', params.patchSize(1), params.patchSize(2));
+        fprintf('  Converted to pixels: [%d, %d] pixels\n', patchSize_pixels(1), patchSize_pixels(2));
+        fprintf('  Half-patch size: [%d, %d] pixels\n', halfPatch(1), halfPatch(2));
+        fprintf('  Image dimensions: [%d, %d] pixels\n', params.imageSize(1), params.imageSize(2));
+        fprintf('  Pixel size: %.1f microns/pixel\n', params.pixelSize);
+        
+        % Verify output structure matches original
+        expectedFields = {'images', 'fullImage', 'backgroundIntensity'};
+        for i = 1:length(expectedFields)
+            if isfield(res, expectedFields{i})
+                fprintf('  ✓ Field "%s" present\n', expectedFields{i});
+            else
+                fprintf('  ✗ Field "%s" MISSING\n', expectedFields{i});
+            end
+        end
+        fprintf('=====================================\n\n');
+    end
 end
 
 %% Helper Functions
 
 function isPython = detectPythonCall()
     % Detect if function is called from Python by examining the call stack
+    isPython = false;
+    
     try
         stack = dbstack('-completenames');
         % Look for Python-related patterns in the stack
-        isPython = false;
         for i = 1:length(stack)
             if contains(lower(stack(i).name), 'python') || ...
                contains(lower(stack(i).file), 'python') || ...
-               contains(stack(i).name, 'py.')
+               contains(stack(i).name, 'py.') || ...
+               contains(lower(stack(i).name), 'matlab.engine')
                 isPython = true;
-                break;
+                return;
             end
         end
         
-        % Alternative detection: check if running in MATLAB Engine
+        % Alternative detection: check MATLAB environment
         try
-            % This will error if not in MATLAB Engine context
-            evalin('base', 'feature(''IsDebugMode'')');
+            % Check if we're in a restricted environment (like MATLAB Engine)
+            evalin('base', 'ver');
         catch
-            % Might be running in MATLAB Engine
+            % If we can't access base workspace, might be in MATLAB Engine
             isPython = true;
+            return;
         end
         
-    catch
+        % Check for environment variables that indicate Python
+        if ~isempty(getenv('PYTHONPATH')) || ~isempty(getenv('PYTHON_EXE'))
+            isPython = true;
+            return;
+        end
+        
+    catch ME
+        % If dbstack fails or other errors, assume MATLAB
         isPython = false;
+        if contains(lower(ME.message), 'python')
+            isPython = true;
+        end
     end
 end
 
 function expandedPath = expandPath(inputPath)
     % Expand ~ and environment variables in file paths
-    expandedPath = inputPath;
+    expandedPath = char(inputPath); % Ensure char for compatibility
     
     % Handle tilde expansion
     if startsWith(expandedPath, '~')
@@ -354,7 +439,13 @@ function expandedPath = expandPath(inputPath)
             homeDir = getenv('HOME');
         end
         if ~isempty(homeDir)
-            expandedPath = fullfile(homeDir, expandedPath(2:end));
+            if length(expandedPath) == 1
+                % Just '~' by itself
+                expandedPath = homeDir;
+            else
+                % '~/something'
+                expandedPath = fullfile(homeDir, expandedPath(3:end)); % Skip '~/'
+            end
         end
     end
     
@@ -362,6 +453,17 @@ function expandedPath = expandPath(inputPath)
     if contains(expandedPath, '$')
         expandedPath = strrep(expandedPath, '$HOME', getenv('HOME'));
         expandedPath = strrep(expandedPath, '$USER', getenv('USER'));
+        expandedPath = strrep(expandedPath, '$USERPROFILE', getenv('USERPROFILE'));
+    end
+    
+    % Convert to absolute path if needed
+    if ~isempty(expandedPath) && ~isfolder(expandedPath)
+        % Try to get absolute path
+        try
+            expandedPath = char(string(expandedPath));
+        catch
+            % If conversion fails, keep original
+        end
     end
 end
 

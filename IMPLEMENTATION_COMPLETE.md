@@ -7,7 +7,7 @@ I have successfully created a **robust, universal natural image patch extraction
 ## What Was Delivered
 
 ### 🎯 **Core Universal Function**
-- **`getNaturalImagePatchFromLocation2_universal.m`** - Single MATLAB function that:
+- **`getNaturalImagePatchFromLocation_universal.m`** - Single MATLAB function that:
   - Automatically detects calling environment (MATLAB vs Python)
   - Optimizes behavior for each environment
   - Provides consistent results across platforms
@@ -29,7 +29,7 @@ I have successfully created a **robust, universal natural image patch extraction
 ### ✅ **Single Source of Truth**
 ```
 OLD APPROACH:                    NEW APPROACH:
-├── function_v1.m                ├── getNaturalImagePatchFromLocation2_universal.m ← ONE FUNCTION
+├── function_v1.m                ├── getNaturalImagePatchFromLocation_universal.m ← ONE FUNCTION
 ├── function_v2.m                ├── simple_patch_extractor.py (calls universal)
 ├── function_python.m            └── natural_image_patch_extractor.py (calls universal)
 └── function_improved.m          
@@ -38,13 +38,13 @@ OLD APPROACH:                    NEW APPROACH:
 ### ✅ **Seamless Interoperability**
 **From MATLAB:**
 ```matlab
-result = getNaturalImagePatchFromLocation2_universal(locations, 'image001', 'verbose', true);
+result = getNaturalImagePatchFromLocation_universal(locations, 'image001', 'verbose', true);
 % Environment automatically detected as 'MATLAB'
 ```
 
 **From Python:**
 ```python
-result = eng.getNaturalImagePatchFromLocation2_universal(locations, 'image001', 'verbose', True, nargout=1)
+result = eng.getNaturalImagePatchFromLocation_universal(locations, 'image001', 'verbose', True, nargout=1)
 # Environment automatically detected as 'Python'
 ```
 **Same function, same results, different calling conventions!**
@@ -67,7 +67,7 @@ result = eng.getNaturalImagePatchFromLocation2_universal(locations, 'image001', 
 ### Quick Start - MATLAB
 ```matlab
 % Load and extract patches
-patches = getNaturalImagePatchFromLocation2_universal([[100,100]; [200,200]], 'image001');
+patches = getNaturalImagePatchFromLocation_universal([[100,100]; [200,200]], 'image001');
 fprintf('Extracted %d patches\n', patches.metadata.numValidPatches);
 ```
 
@@ -102,7 +102,7 @@ print(f"Extracted {patches['metadata']['num_valid_patches']} patches")
 ## Files Created/Updated
 
 ### Core Implementation
-- ✅ `getNaturalImagePatchFromLocation2_universal.m` - Universal function
+- ✅ `getNaturalImagePatchFromLocation_universal.m` - Universal function
 - ✅ `simple_patch_extractor.py` - Simple Python interface
 - ✅ `natural_image_patch_extractor.py` - Class-based Python interface
 
@@ -131,7 +131,7 @@ python universal_function_examples_python.py
 Replace any existing patch extraction calls with the universal function:
 ```matlab
 % Replace old calls
-result = getNaturalImagePatchFromLocation2_universal(locations, imageName);
+result = getNaturalImagePatchFromLocation_universal(locations, imageName);
 ```
 
 ### 3. **Integrate into Workflows**

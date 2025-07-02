@@ -3,7 +3,7 @@
 Universal Function Usage Examples - Python Side
 
 This script demonstrates how to use the universal 
-getNaturalImagePatchFromLocation2_universal function from Python.
+getNaturalImagePatchFromLocation_universal function from Python.
 
 The SAME MATLAB function is called from both Python and MATLAB - no separate versions!
 """
@@ -49,7 +49,7 @@ def test_universal_function_direct():
         
         # Call the UNIVERSAL function - same one used in MATLAB!
         print(f"Calling universal function for image: {image_name}")
-        result = eng.getNaturalImagePatchFromLocation2_universal(
+        result = eng.getNaturalImagePatchFromLocation_universal(
             locations_matlab, 
             image_name,
             'verbose', True,
@@ -154,10 +154,10 @@ def compare_with_matlab():
     print("✓ Easier maintenance and updates")
     
     print("\nFrom MATLAB:")
-    print("  result = getNaturalImagePatchFromLocation2_universal(locations, 'image001', 'verbose', true);")
+    print("  result = getNaturalImagePatchFromLocation_universal(locations, 'image001', 'verbose', true);")
     
     print("\nFrom Python:")
-    print("  result = eng.getNaturalImagePatchFromLocation2_universal(locations, 'image001', 'verbose', True, nargout=1)")
+    print("  result = eng.getNaturalImagePatchFromLocation_universal(locations, 'image001', 'verbose', True, nargout=1)")
     
     print("\nSame function, same results, different calling conventions!")
 
@@ -168,7 +168,7 @@ def main():
     
     print(f"Current directory: {os.getcwd()}")
     print("Required files:")
-    print("• getNaturalImagePatchFromLocation2_universal.m")
+    print("• getNaturalImagePatchFromLocation_universal.m")
     print("• Natural image files")
     print("• MATLAB Engine API for Python")
     print()

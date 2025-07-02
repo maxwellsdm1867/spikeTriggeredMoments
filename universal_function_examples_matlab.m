@@ -1,6 +1,6 @@
 %% Universal Function Usage Examples - MATLAB Side
 % This script demonstrates how to use the universal 
-% getNaturalImagePatchFromLocation2_universal function from MATLAB
+% getNaturalImagePatchFromLocation_universal function from MATLAB
 
 %% Example 1: Basic Usage
 clear; close all; clc;
@@ -19,7 +19,7 @@ imageName = 'image001';  % Replace with your actual image name
 fprintf('--- Example 1: Basic Usage ---\n');
 try
     % Basic call - the universal function automatically detects it's being called from MATLAB
-    result1 = getNaturalImagePatchFromLocation2_universal(patchLocations, imageName, ...
+    result1 = getNaturalImagePatchFromLocation_universal(patchLocations, imageName, ...
         'verbose', true);
     
     fprintf('✓ Successfully extracted patches using universal function\n');
@@ -35,7 +35,7 @@ end
 %% Example 2: Advanced Usage with Custom Parameters
 fprintf('--- Example 2: Advanced Usage ---\n');
 try
-    result2 = getNaturalImagePatchFromLocation2_universal(patchLocations, imageName, ...
+    result2 = getNaturalImagePatchFromLocation_universal(patchLocations, imageName, ...
         'patchSize', [150, 150], ...      % Custom patch size in microns
         'normalize', true, ...            % Normalize image intensity
         'verbose', true, ...              % Show progress
@@ -95,7 +95,7 @@ end
 fprintf('--- Example 5: Force Python Mode ---\n');
 try
     % Force Python mode to see the difference
-    resultPythonMode = getNaturalImagePatchFromLocation2_universal(patchLocations, imageName, ...
+    resultPythonMode = getNaturalImagePatchFromLocation_universal(patchLocations, imageName, ...
         'pythonMode', true, ...
         'verbose', true);
     
@@ -109,7 +109,7 @@ end
 
 %% Summary
 fprintf('\n=== Summary ===\n');
-fprintf('The universal function getNaturalImagePatchFromLocation2_universal:\n');
+fprintf('The universal function getNaturalImagePatchFromLocation_universal:\n');
 fprintf('• Automatically detects calling environment (MATLAB vs Python)\n');
 fprintf('• Provides consistent interface for both environments\n');
 fprintf('• Maintains full compatibility with enhanced features\n');
@@ -117,6 +117,6 @@ fprintf('• Eliminates need for separate function versions\n');
 fprintf('• Can be forced into specific modes if needed\n\n');
 
 fprintf('From Python, call the same function via MATLAB Engine:\n');
-fprintf('  eng.getNaturalImagePatchFromLocation2_universal(locations, name, nargout=1)\n\n');
+fprintf('  eng.getNaturalImagePatchFromLocation_universal(locations, name, nargout=1)\n\n');
 
 fprintf('Usage completed! Check the Python examples for the other side.\n');

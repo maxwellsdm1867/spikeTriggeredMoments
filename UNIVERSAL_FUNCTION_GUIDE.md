@@ -12,7 +12,7 @@ This project now features a **universal MATLAB function** that can be called sea
 - `getNaturalImagePatchFromLocation2_python.m` - Python-specific version
 
 ### 🚀 **Now: Single Universal Function**
-- `getNaturalImagePatchFromLocation2_universal.m` - **One function for all environments**
+- `getNaturalImagePatchFromLocation_universal.m` - **One function for all environments**
 
 ## Key Benefits
 
@@ -38,10 +38,10 @@ This project now features a **universal MATLAB function** that can be called sea
 ### From MATLAB
 ```matlab
 % Basic usage
-result = getNaturalImagePatchFromLocation2_universal(patchLocations, 'image001');
+result = getNaturalImagePatchFromLocation_universal(patchLocations, 'image001');
 
 % Advanced usage with parameters
-result = getNaturalImagePatchFromLocation2_universal(...
+result = getNaturalImagePatchFromLocation_universal(...
     patchLocations, 'image001', ...
     'patchSize', [150, 150], ...
     'verbose', true, ...
@@ -85,7 +85,7 @@ eng = matlab.engine.start_matlab()
 locations = matlab.double([[100, 100], [200, 200]])
 
 # Call the SAME universal function
-result = eng.getNaturalImagePatchFromLocation2_universal(
+result = eng.getNaturalImagePatchFromLocation_universal(
     locations, 'image001',
     'verbose', True,
     'patchSize', matlab.double([150.0, 150.0]),
@@ -139,7 +139,7 @@ result.metadata = struct with fields:
 ### 1. **For MATLAB Users**
 Just call the function directly - no setup required!
 ```matlab
-result = getNaturalImagePatchFromLocation2_universal(locations, 'image001');
+result = getNaturalImagePatchFromLocation_universal(locations, 'image001');
 ```
 
 ### 2. **For Python Users**
@@ -162,13 +162,13 @@ extractor = NaturalImagePatchExtractor()
 patches = extractor.extract_patches(...)
 
 # Advanced: Direct call (not recommended for most users)
-# result = eng.getNaturalImagePatchFromLocation2_universal(...)
+# result = eng.getNaturalImagePatchFromLocation_universal(...)
 ```
 
 ## File Organization
 
 ```
-├── getNaturalImagePatchFromLocation2_universal.m     # ← THE UNIVERSAL FUNCTION
+├── getNaturalImagePatchFromLocation_universal.m     # ← THE UNIVERSAL FUNCTION
 ├── simple_patch_extractor.py                         # Python wrapper (calls universal)
 ├── natural_image_patch_extractor.py                  # Class interface (calls universal)
 ├── universal_function_examples_matlab.m              # MATLAB usage examples
@@ -185,7 +185,7 @@ Replace your existing calls:
 result = getNaturalImagePatchFromLocation2_improved(locations, 'image001');
 
 % New way (universal)
-result = getNaturalImagePatchFromLocation2_universal(locations, 'image001');
+result = getNaturalImagePatchFromLocation_universal(locations, 'image001');
 ```
 
 ### From Python-Specific Version
@@ -195,7 +195,7 @@ Update your Python scripts:
 result = eng.getNaturalImagePatchFromLocation2_python(...)
 
 # New way (same function as MATLAB!)
-result = eng.getNaturalImagePatchFromLocation2_universal(...)
+result = eng.getNaturalImagePatchFromLocation_universal(...)
 ```
 
 ## Testing and Examples
@@ -215,7 +215,7 @@ python universal_function_examples_python.py
 ### Common Issues
 
 1. **Function Not Found**
-   - Ensure `getNaturalImagePatchFromLocation2_universal.m` is in your MATLAB path
+   - Ensure `getNaturalImagePatchFromLocation_universal.m` is in your MATLAB path
    - From Python: Check that the directory is added to MATLAB engine path
 
 2. **Image Files Not Found**
@@ -229,10 +229,10 @@ python universal_function_examples_python.py
 ### Getting Help
 ```matlab
 % View function documentation
-help getNaturalImagePatchFromLocation2_universal
+help getNaturalImagePatchFromLocation_universal
 
 % Run with verbose output
-result = getNaturalImagePatchFromLocation2_universal(..., 'verbose', true);
+result = getNaturalImagePatchFromLocation_universal(..., 'verbose', true);
 ```
 
 ## Conclusion

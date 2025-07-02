@@ -9,7 +9,7 @@ class NaturalImagePatchExtractor:
     """
     Python wrapper for enhanced natural image patch extraction from MATLAB.
     
-    This class provides a Python interface to the universal getNaturalImagePatchFromLocation2_universal
+    This class provides a Python interface to the universal getNaturalImagePatchFromLocation_universal
     function, allowing seamless integration between Python and MATLAB for visual neuroscience
     experiments.
     
@@ -63,7 +63,7 @@ class NaturalImagePatchExtractor:
                 ]
                 
                 for path in possible_paths:
-                    if (path / "getNaturalImagePatchFromLocation2_universal.m").exists():
+                    if (path / "getNaturalImagePatchFromLocation_universal.m").exists():
                         self.eng.addpath(str(path.resolve()))
                         print(f"Added MATLAB path: {path}")
                         break
@@ -157,7 +157,7 @@ class NaturalImagePatchExtractor:
                 kwargs['resourcesDir'] = resources_dir
             
             # Call the MATLAB function
-            result = self.eng.getNaturalImagePatchFromLocation2_universal(*args, **kwargs)
+            result = self.eng.getNaturalImagePatchFromLocation_universal(*args, **kwargs)
             
             # Convert MATLAB result to Python format
             return self._convert_matlab_result(result)

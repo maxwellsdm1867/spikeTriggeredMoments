@@ -57,9 +57,9 @@ The toolkit analyzes data from the **FlashedGratePlusNoise protocol** and uses *
 ### Custom Functions
 - `manualRidgeRegressionCustom.m`
 - `SpikeDetection.Detector`
-- `getNaturalImagePatchFromLocation2_universal.m` ⭐ **RECOMMENDED: Use this universal function for all natural image processing**
+- `getNaturalImagePatchFromLocation_universal.m` ⭐ **RECOMMENDED: Use this universal function for all natural image processing**
 
-> **⚠️ Important**: For all new development, use `getNaturalImagePatchFromLocation2_universal.m`. This function provides the same interface as the original `getNaturalImagePatchFromLocation2.m` but with enhanced features, error handling, and Python compatibility.
+> **⚠️ Important**: For all new development, use `getNaturalImagePatchFromLocation_universal.m`. This function provides the same interface as the original `getNaturalImagePatchFromLocation2.m` but with enhanced features, error handling, and Python compatibility.
 
 ## Installation
 
@@ -91,12 +91,15 @@ This toolkit features a **revolutionary universal function** that can be called 
 
 ### Key Innovation: One Function, Two Environments
 
-**`getNaturalImagePatchFromLocation2_universal.m`** automatically detects whether it's being called from MATLAB or Python and optimizes its behavior accordingly.
+**`getNaturalImagePatchFromLocation_universal.m`** automatically detects whether it's being called from MATLAB or Python and optimizes its behavior accordingly.
 
 #### From MATLAB (Direct):
 ```matlab
 % Extract patches using the universal function
-patches = getNaturalImagePatchFromLocation2_universal([[100,100]; [200,200]], 'image001', 'verbose', true);
+patches = getNaturalImagePatchFromLocation_universal([[100,100]; [200,200]], 'image001', 'resourcesDir', '/path/to/images', 'verbose', true);
+
+% ⚠️ NOTE: The universal function now REQUIRES the 'resourcesDir' parameter
+% This ensures reliable operation across different systems and setups
 fprintf('Called from: %s\n', patches.metadata.callingEnvironment);  % Output: 'MATLAB'
 ```
 
@@ -152,7 +155,7 @@ The toolkit processes visual stimuli using filtered Gaussian noise that is appli
    noiseMatrix = noiseMatrix / std(noiseMatrix(:));
    ```
 
-4. **Patch Sampling**: Natural image patches are sampled from specified locations using the **universal function** `getNaturalImagePatchFromLocation2_universal()`, which:
+4. **Patch Sampling**: Natural image patches are sampled from specified locations using the **universal function** `getNaturalImagePatchFromLocation_universal()`, which:
    - Works seamlessly from both MATLAB and Python environments
    - Maintains full backward compatibility with the original function
    - Provides enhanced error handling and cross-platform support
@@ -269,7 +272,7 @@ cdt_node = node{1};
 
 % 6. Extract natural image patches using UNIVERSAL function (RECOMMENDED)
 patchLocations = [[100, 100]; [200, 200]; [300, 300]]; % Example locations
-patches = getNaturalImagePatchFromLocation2_universal(patchLocations, 'image001', 'verbose', true);
+patches = getNaturalImagePatchFromLocation_universal(patchLocations, 'image001', 'resourcesDir', '/path/to/images', 'verbose', true);
 
 % 7. Run the complete spike-triggered moment analysis
 run('spikeTriggerMoments.m');
@@ -299,7 +302,7 @@ patches = extract_patches(
 
 print(f"Extracted {len(patches['images'])} patches")
 print(f"Valid patches: {patches['metadata']['num_valid_patches']}")
-print(f"Function used: getNaturalImagePatchFromLocation2_universal")
+print(f"Function used: getNaturalImagePatchFromLocation_universal")
 
 # Use patches in your Python analysis pipeline
 import numpy as np
@@ -411,7 +414,7 @@ fprintf('Hold-out R²: %.3f\n', r2_holdout);
 
 ### Universal Natural Image Processing
 
-- **`getNaturalImagePatchFromLocation2_universal.m`**: 🌟 **Universal function** callable from both MATLAB and Python
+- **`getNaturalImagePatchFromLocation_universal.m`**: 🌟 **Universal function** callable from both MATLAB and Python
 - **`simple_patch_extractor.py`**: 🐍 **Python wrapper (RECOMMENDED)** - Simple functional interface
 - **`natural_image_patch_extractor.py`**: 🐍 **Python wrapper (RECOMMENDED)** - Class-based interface
 
@@ -542,7 +545,7 @@ spikeTriggeredMoments/
 │   └── stm_text.m                              # Synthetic data testing
 │
 ├── 🌟 Universal Natural Image Processing
-│   ├── getNaturalImagePatchFromLocation2_universal.m  # Universal MATLAB function
+│   ├── getNaturalImagePatchFromLocation_universal.m  # Universal MATLAB function
 │   ├── simple_patch_extractor.py              # 🐍 Python wrapper (RECOMMENDED)
 │   └── natural_image_patch_extractor.py       # 🐍 Python wrapper (RECOMMENDED)
 │
@@ -562,7 +565,7 @@ spikeTriggeredMoments/
 ```
 
 > **📍 Recommended Usage**:
-> - **MATLAB users**: Use `getNaturalImagePatchFromLocation2_universal.m` directly
+> - **MATLAB users**: Use `getNaturalImagePatchFromLocation_universal.m` directly
 > - **Python users**: Use `simple_patch_extractor.py` or `natural_image_patch_extractor.py` wrappers
 > - **Both**: Avoid legacy functions and use the universal approach for consistency
 
@@ -593,7 +596,7 @@ spikeTriggeredMoments/
 ### 📖 Documentation
 - **README.md** - This comprehensive guide
 - **UNIVERSAL_FUNCTION_GUIDE.md** - Detailed universal function documentation
-- **Function help**: `help getNaturalImagePatchFromLocation2_universal` in MATLAB
+- **Function help**: `help getNaturalImagePatchFromLocation_universal` in MATLAB
 
 ### 🔧 Troubleshooting
 - Check MATLAB Engine API installation for Python usage
