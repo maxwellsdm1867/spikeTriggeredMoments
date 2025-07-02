@@ -145,32 +145,40 @@ r2_holdout = 1 - sum((actual - predicted).^2) / sum((actual - mean(actual)).^2);
 ### Basic Analysis
 
 ```matlab
-% Main analysis script - spikeTriggerMoments.m
-% Load experimental data using Rieke Lab framework
+% 1. Set up the workspace environment
+close all; clear all; clc;
+
+% 2. Configure analysis parameters
+params.FrequencyCutoff = 500;
+params.Amp = 'Amp1';
+params.SamplingInterval = 0.0001;
+params.FrameRate = 60.1830;
+
+% 3. Set data paths
+dataFolder = '/path/to/your/data/';
+exportFolder = '/path/to/your/export/';
+
+% 4. Load experimental data using Rieke Lab framework
 loader = edu.washington.rieke.Analysis.getEntityLoader();
 list = loader.loadEpochList([exportFolder 'FlashedGratePlusNoise.mat'], dataFolder);
 
-% Build analysis tree and select node
+% 5. Build analysis tree and select experimental node
 tree = riekesuite.analysis.buildTree(list, {...});
 gui = epochTreeGUI(tree);
+% Manually select node in GUI, then:
 node = gui.getSelectedEpochTreeNodes;
 cdt_node = node{1};
 
-% Extract experimental parameters
-SampleEpoch = cdt_node.epochList.elements(1);
-SamplingInterval = 1000/SampleEpoch.protocolSettings.get('sampleRate');
-imageSize = [90 120];  % B-rig: [90 120], G-rig: [166 268]
+% 6. Run the complete analysis
+run('spikeTriggerMoments.m');
 
-% Get spike data and stimulus data
-EpochData = getSelectedData(cdt_node.epochList, params.Amp);
-[SpikeTimes, ~, ~] = SpikeDetection.Detector(EpochData);
-
-% Results are stored in structured format:
-% results.STA_original - Spike-triggered average
-% results.rf_mask - Receptive field mask  
-% results.moment_weights - Weights for each moment
-% results.contributions - Relative contributions (%)
-% results.r2_scores - Cross-validation R²
+% 7. The analysis creates these key variables:
+% - STA{1}: Spike-triggered average
+% - rf_mask: Receptive field mask
+% - SpikeCounts: Spike counts per trial
+% - moment1, moment2, moment3: Computed moments
+% - a_estimated: Moment contributions [mean, second, third]
+% - weights_real: Actual data weights
 ```
 
 ### Synthetic Data Testing
@@ -265,21 +273,37 @@ fprintf('Hold-out R²: %.3f\n', r2_holdout);
 - **SpikeTimes**: Cell array containing spike times for each epoch
 - **EpochData**: Voltage traces from experimental recordings
 
-### Output Results
+### Output Variables
+
+After running the analysis scripts, the following variables are created in the MATLAB workspace:
 
 ```matlab
-% Results structure contains:
-results.STA_original          % Spike-triggered average
-results.STA_from_matrices     % STA recomputed from matrices (validation)
-results.SpikeCounts           % Original spike counts per trial
-results.SpikeCounts_corrected % Mean-corrected spike counts
-results.rf_mask               % Boolean receptive field mask
-results.Stimuli_RF            % RF-masked stimulus pixels
-results.StimuliHist          % Equal-width histogram matrix
-results.StimuliHistEqualPop  % Equal-population histogram matrix
-results.moment_weights       % Regression weights for each moment
-results.contributions        % Relative moment contributions (%)
-results.r2_scores           % Cross-validation R² scores
+% Core Analysis Variables (spikeTriggerMoments.m):
+STA                           % Cell array of spike-triggered averages
+SpikeCounts                   % Original spike counts per trial (1 x numTrials)
+SpikeCounts_corrected         % Mean-corrected spike counts
+rf_mask                       % Boolean receptive field mask
+Stimuli_RF                    % RF-masked stimulus pixels (numTrials x numPixels_rf)
+StimuliHist                   % Equal-width histogram matrix (numTrials x nbins)
+StimuliHistEqualPop          % Equal-population histogram matrix
+
+% Moment Analysis Variables:
+moment1, moment2, moment3     % Raw moments for each trial
+weights_mean, weights_second, weights_third  % Ridge regression weights for each moment
+weights_real                  % Weights fitted to real spike data
+a_estimated                   % Estimated moment contributions [a1, a2, a3]
+W_moments                     % Matrix of moment weights for decomposition
+
+% Cross-Validation Variables (stm_clean.m):
+a_normalized                  % Relative contributions as percentages
+r2_holdout                    % Hold-out validation R²
+spikeCounts_predicted_test    % Predicted spike counts on test set
+
+% Structured Results (only in spikeTriggerMoments.m):
+results.STA_original          % Main spike-triggered average
+results.SpikeCounts           % Original spike counts
+results.rf_mask               % Receptive field mask
+results.imageSize             % Stimulus image dimensions
 ```
 
 ## Usage Examples
@@ -291,13 +315,35 @@ results.r2_scores           % Cross-validation R² scores
 dataFolder = '/path/to/data/';
 exportFolder = '/path/to/export/';
 
-% Load and analyze data
+% Run the main analysis script
 run('spikeTriggerMoments.m');
 
-% View results
-fprintf('Mean contribution: %.2f%%\n', results.contributions.mean);
-fprintf('Variance contribution: %.2f%%\n', results.contributions.variance);
-fprintf('Cross-validation R²: %.3f\n', results.r2_scores.holdout);
+% After completion, access the variables:
+fprintf('Total spikes: %d\n', totSpikes);
+fprintf('RF radius: %.2f pixels\n', rf_radius);
+fprintf('Mean contribution: %.4f\n', a_estimated(1));
+fprintf('Second moment contribution: %.4f\n', a_estimated(2));
+fprintf('Third moment contribution: %.4f\n', a_estimated(3));
+
+% View the STA and RF mask
+figure; 
+subplot(1,2,1); imagesc(STA{1}); title('Spike-Triggered Average');
+subplot(1,2,2); imagesc(rf_mask); title('Receptive Field Mask');
+```
+
+### Running Streamlined Analysis with Cross-Validation
+
+```matlab
+% Run the clean version with cross-validation
+run('stm_clean.m');
+
+% View moment contributions as percentages
+fprintf('\n--- Moment Contributions ---\n');
+fprintf('0th Moment (Offset): %.2f%%\n', a_normalized(1));
+fprintf('1st Moment (Mean): %.2f%%\n', a_normalized(2));
+fprintf('2nd Moment: %.2f%%\n', a_normalized(3));
+fprintf('3rd Moment: %.2f%%\n', a_normalized(4));
+fprintf('Hold-out R²: %.4f\n', r2_holdout);
 ```
 
 ### Testing with Synthetic Data
